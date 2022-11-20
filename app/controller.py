@@ -14,7 +14,7 @@ def combinaisonGagnante():
 def quatrePremierTour():
     cpt = 0
     joueurActuel = "J1"
-    while cpt < 2:
+    while cpt < 8:
         cpt += 1
         print("C'est à " + joueurActuel + " de jouer")
         L = int(input("Ligne : "))
