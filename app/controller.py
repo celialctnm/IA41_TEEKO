@@ -8,14 +8,14 @@ NOMBRE_DE_COLONNES = 5
 
 # définir les combinaisons gagnantes signifiant l'arret de la partie
 def combinaisonGagnante(grille, joueur):
-    #Honrizontale
+    #Verticale
     for l in range(NOMBRE_DE_LIGNES-3):
         for c in range(NOMBRE_DE_COLONNES):
             if grille[l][c] == joueur and grille[l+1][c] == joueur and grille[l+2][c] == joueur and grille[l+3][c] == joueur:
                 etat = True
                 return etat
 
-    #Verticale
+    #Horizontale
     for l in range(NOMBRE_DE_LIGNES):
         for c in range(NOMBRE_DE_COLONNES-3):
             if grille[l][c] == joueur and grille[l][c+1] == joueur and grille[l][c+2] == joueur and grille[l][c+3] == joueur:
@@ -97,4 +97,57 @@ def quatrePremierTour():
 
 
 def partieEnCours():
+    # Etude des cas de chaque joueur
+        # Choisir quel pion à déplacer
+
+        # choisir le déplacement du pion
+
     return grille
+     # 3 fonctions de déplacement
+     # Se déplacer horizontalement droit et gauche
+def deplacerHorizontalementàgauche(grille, joueur):
+             for l in range (NOMBRE_DE_LIGNES):
+                 for n in range(NOMBRE_DE_COLONNES):
+                     grille[l][n] = grille[l][n - 1];
+                     grille[l][n - 1] = 0;
+def deplacerHorizontalementàdroite(grille ,joueur):
+             for l in range(NOMBRE_DE_LIGNES):
+                 for n in range(NOMBRE_DE_COLONNES):
+                         grille[l][n] = grille[l][n + 1];
+                         grille[l][n + 1]=0;
+    # Se déplacer verticalement bas et haut
+def deplacerVerticalementàdroite(grille,joueur):
+            for l in range(NOMBRE_DE_LIGNES):
+                for n in range(NOMBRE_DE_COLONNES):
+                    grille[l][n] =grille[l+1][n]
+                    grille[l+1][n]=0;
+def deplacerVerticalementàgauche(grille,joueur):
+        for l in range(NOMBRE_DE_LIGNES):
+             for n in range(NOMBRE_DE_COLONNES):
+                 grille[l][n] = grille[l - 1][n];
+                 grille[l - 1][n] = 0;
+          # Se déplacer diagonalement ligne supérieure et inférieure
+          # en haut à gauche
+def deplacerDiagoalementHautàgauche(grille,joueur):
+        for l in range(NOMBRE_DE_LIGNES):
+            for n in range(NOMBRE_DE_COLONNES):
+                grille[l][n] = grille[l + 1][n-1];
+                grille[l + 1][n - 1]=0;
+          # en haut à droite
+def deplacerDiagoalementHautàdroite(grille,joueur):
+            for l in range(NOMBRE_DE_LIGNES):
+                for n in range(NOMBRE_DE_COLONNES):
+                    grille[l][n] = grille[l + 1][n + 1];
+                    grille[l + 1][n + 1]=0;
+          # en bas à droite
+def deplacerDiagoalementBasàdroite(grille,joueur):
+    for l in range(NOMBRE_DE_LIGNES):
+        for n in range(NOMBRE_DE_COLONNES):
+            grille[l][n] = grille[l - 1][n + 1];
+            grille[l - 1][n + 1]=0;
+          # en bas à gauche
+def deplacerDiagoalementBasàgauche(grille,joueur):
+    for l in range(NOMBRE_DE_LIGNES):
+        for n in range(NOMBRE_DE_COLONNES):
+            grille[l][n] = grille[l - 1][n - 1];
+            grille[l - 1][n - 1]=0;
