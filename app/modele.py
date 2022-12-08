@@ -65,12 +65,18 @@ def mouseClick(event):
     pion1 = Label
     caseVide = Label
 
+    t = labels.index(touchPress[0])
+    print(t)
+    print(labels[t])
+
     # si deux labels sont cliqués, ils devront être interveti, le pion prendrait la place de la case vide
     if len(touchPress) == 2:
         pion1 = touchPress[0]
         caseVide = touchPress[1]
         # fonction pour déplacer les pions en fonction des deux cases selectionnées
+        print(caseVide,pion1)
         touchPress.clear()
+    
 
 
 # rend les labels clickables à l'aide la souris
