@@ -6,7 +6,7 @@ import controller
 
 
 modele.dessinerPlateau()
-controller.quatrePremierTour()
+controller.partieEnCours()
 
 # test fonction labelClickable
 # modele.labelClickable()

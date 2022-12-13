@@ -1,3 +1,5 @@
+import tkinter
+
 import numpy
 import numpy as np
 from tkinter import *
@@ -20,9 +22,17 @@ pionJ2 = PhotoImage(file="orange.png")
 caseVide = PhotoImage(file="vide.png")
 
 # liste labels
-labels = []
-for i in range(25):
-    labels.append(Label)
+#labels = []
+
+labels = [
+    [Label, Label, Label, Label, Label],
+    [Label, Label, Label, Label, Label],
+    [Label, Label, Label, Label, Label],
+    [Label, Label, Label, Label, Label],
+    [Label, Label, Label, Label, Label]
+]
+#for i in range(25):
+    #labels.append(Label)
 
 # liste label cliqué
 touchPress = []
@@ -36,19 +46,19 @@ def dessinerPlateau():
             if grille[ligne][colonne] == 1:
                 J1Lab = Label(fenetre, cursor="plus", image=pionJ1, borderwidth=1)
                 J1Lab.grid(row=ligne, column=colonne)
-                labels[cpt] = J1Lab
+                labels[ligne][colonne] = J1Lab
                 cpt += 1
                 # labels.append(Label(fenetre, image=pionJ1, borderwidth=1))
                 # Label(fenetre, image=pionJ1, borderwidth=1).grid(row=ligne, column=colonne)
             elif grille[ligne][colonne] == 2:
                 J2Lab = Label(fenetre, cursor="plus", image=pionJ2, fg='white', borderwidth=1)
                 J2Lab.grid(row=ligne, column=colonne)
-                labels[cpt] = J2Lab
+                labels[ligne][colonne] = J2Lab
                 cpt += 1
             else:
                 J3Lab = Label(fenetre, image=caseVide, borderwidth=1)
                 J3Lab.grid(row=ligne, column=colonne)
-                labels[cpt] = J3Lab
+                labels[ligne][colonne] = J3Lab
                 cpt += 1
     # mise à jour de la fenêtre
     # print(labels)
@@ -57,29 +67,27 @@ def dessinerPlateau():
 
 # réalise une action lorsqu'un label est cliqué
 def mouseClick(event):
+    etat = False
     print("mouse clicked")
-
-    # ajouter les labels cliqués dans une liste
-    touchPress.append(event.widget)
-
-    pion1 = Label
-    caseVide = Label
-
-    t = labels.index(touchPress[0])
-    print(t)
-    print(labels[t])
-
-    # si deux labels sont cliqués, ils devront être interveti, le pion prendrait la place de la case vide
-    if len(touchPress) == 2:
-        pion1 = touchPress[0]
-        caseVide = touchPress[1]
-        # fonction pour déplacer les pions en fonction des deux cases selectionnées
-        print(caseVide,pion1)
-        touchPress.clear()
-    
+    print(event.widget)
+    for i in range(5):
+        for x in range(5):
+            if labels[i][x] == event.widget:
+                if grille[i][x] == 0:
+                    print(i,x)
+                    grille[i][x] = joueurActuel
+                    dessinerPlateau()
+                    etat = True
+                    return grille
+            else:
+                labelClickable(joueurActuel)
+    return etat
 
 
+joueurActuel = 1
 # rend les labels clickables à l'aide la souris
-def labelClickable():
-    for label in labels:
-        label.bind("<Button-1>", mouseClick)
+def labelClickable(joueur):
+    joueurActuel = joueur
+    for i in range(5):
+        for x in range(5):
+            labels[i][x].bind("<Button-1>", mouseClick)
