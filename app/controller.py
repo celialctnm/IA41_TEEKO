@@ -1,3 +1,5 @@
+import random
+
 import modele
 
 grille = modele.grille
@@ -6,6 +8,13 @@ NOMBRE_DE_LIGNES = 5
 NOMBRE_DE_COLONNES = 5
 J1_DEPLACEMENTS_POSSIBLES = []
 J2_DEPLACEMENTS_POSSIBLES = []
+
+LISTE_CP_J1 = []
+LISTE_CP_J2 = []
+
+# Liste des pions des 2 joueurs
+CPTJ1 = []
+CPTIA = []
 
 grillePoint = [
     [1, 3, 5, 3, 1],
@@ -37,7 +46,7 @@ def combinaisonGagnante(grille, joueur):
     # Diagonale positive
     for l in range(3, NOMBRE_DE_LIGNES):
         for c in range(NOMBRE_DE_COLONNES - 3):
-            print(grille[l][c], grille[l - 1][c + 1], grille[l - 2][c + 2], grille[l - 3][c + 3])
+            # print(grille[l][c], grille[l - 1][c + 1], grille[l - 2][c + 2], grille[l - 3][c + 3])
             if grille[l][c] == joueur and grille[l - 1][c + 1] == joueur and grille[l - 2][c + 2] == joueur and \
                     grille[l - 3][c + 3] == joueur:
                 etat = True
@@ -58,7 +67,6 @@ def combinaisonGagnante(grille, joueur):
                 c + 1] == joueur:
                 etat = True
                 return etat
-
     etat = False
     return etat
 
@@ -84,6 +92,8 @@ def quatrePremierTour():
         if joueurActuel == "J1":
             grille[L][C] = 1
             voisinsPion(grille, (L, C), L, C)
+            CPTJ1.append((L, C))
+            deplacementPossible(grille, CPTJ1)
             joueurActuel = "J2"
             if combinaisonGagnante(modele.grille, 1):
                 gagnant = "J1"
@@ -91,15 +101,16 @@ def quatrePremierTour():
                 modele.dessinerPlateau()
                 break
         else:
-            modele.grille[L][C] = 2
-            voisinsPion(grille, (L, C), L, C)
+            IA(grille)
+            # modele.grille[x][y] = 2
+            # voisinsPion(grille, (x, y), x, y)
             joueurActuel = "J1"
             if combinaisonGagnante(modele.grille, 2):
                 gagnant = "J2"
                 print("Le gagnant est : " + gagnant)
                 modele.dessinerPlateau()
                 break
-        print(grille)
+        afficherGrille(grille)
         modele.dessinerPlateau()
 
         # continuer la partie si aucune combinaison gagnante
@@ -127,6 +138,7 @@ def partieEnCours():
 # déterminer voisins disponibles d'un joueur
 def voisinsPion(grille, pion, ligne, colonne):
     liste = []
+    indexASuppr = []
 
     # calculer voisins d'un pion
     if ligne - 1 >= 0:
@@ -149,18 +161,14 @@ def voisinsPion(grille, pion, ligne, colonne):
             liste.append((ligne + 1, colonne + 1))
 
     # la liste d'un pion ne contient que les déplacements possibles
-    indexASuppr = []
     for voisin in range(len(liste)):
         x = liste[voisin][0]
         y = liste[voisin][1]
-        indice = x,y
+        indice = x, y
         if grille[x][y] != 0:
             indexASuppr.append(liste.index(indice))
 
-    print("liste voisins initiale :", liste)
-    print("liste après suppression des places occupées : ", indexASuppr)
-
-    for i in range(len(indexASuppr)):
+    for i in range(len(indexASuppr) - 1):
         del liste[indexASuppr[i]]
 
     # si pion = 1, J1.append(liste)
@@ -176,9 +184,105 @@ def voisinsPion(grille, pion, ligne, colonne):
     else:
         print("Pion non valide")
         return False
-    print("J1 : ", J1_DEPLACEMENTS_POSSIBLES)
-    print("J2 : ", J2_DEPLACEMENTS_POSSIBLES)
-    return True, liste
+    return liste
+
+
+# déplacer pion
+# si l'emplacement du pion à déplacer est dans les coups possibles du joueur
+# alors déplacer le pion
+
+# il faut min/max les points de l'IA et soustraire au joueur ? pourquoi ?
+
+
+# déplacement possible pour chaque pion d'un joueur
+# liste chaînée
+
+LISTE_J1_CP_PAR_PION = []
+
+
+def deplacementPossible(grille, pions):
+    print("Liste des pions J1 : ", pions)
+    for i in range(len(pions)):
+        LISTE_J1_CP_PAR_PION.append(voisinsPion(grille, pions[i], pions[i][0], pions[i][1]))
+
+
+def fonctionTest():
+    res2 = 0
+    coord = (0, 0)
+    for x in range(5):
+        for y in range(5):
+            # res2 = scoreIA(grille)
+            if grille[x][y] == 2:
+                res2 += grillePoint[x][y]
+
+            res = grillePoint[x][y]
+            if grille[x][y] == 0 and res2 < res:
+                res2 = res
+                print("Coordonnées : ", "(", x, ",", y, ")")
+                print("Résultat : ", res)
+                coord = x, y
+    return coord
+
+
+def scoreIA(grille):
+    res = 0
+    for x in range(5):
+        for y in range(5):
+            if grille[x][y] == 2:
+                res += grillePoint[x][y]
+    print("RESULTAT POINT IA : ", res)
+    return res
+
+
+# afficher grille terminal
+def afficherGrille(grille):
+    for x in grille:
+        for elem in x:
+            print(elem, end=' ')
+        print()
+
+# afficher liste des voisins d'un pion
+def afficherVoisinJoueur(grille, joueur):
+    print("Liste pions IA : ", joueur)
+    print("Liste des coups possibles IA taille : ", len(grille),", coups : ", grille)
+
+    if len(grille) >= 8:
+        for i in range(0,8,2):
+            print(grille[i])
+
+
+# IA
+def IA(grille):
+    coord = (0, 0)
+    coord = (random.randint(0, 4), random.randint(0, 4))
+
+    while grille[coord[0]][coord[1]] != 0:
+        coord = (random.randint(0, 4), random.randint(0, 4))
+    grille[coord[0]][coord[1]] = 2
+    CPTIA.append(coord)
+    print("Coordonnée IA : ", coord)
+    print("Liste des pions IA : ", CPTIA)
+
+    deplacementPossibles(grille, CPTIA)
+
+    return grille, coord
+
+# afficher les voisins pour chaque pion d'un joueur dans une liste
+LISTE_DEPLACEMENT_POSSIBLE_IA = []
+
+def deplacementPossibles(grille, pionjoueur):
+    LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[len(pionjoueur)-1])
+    LISTE_DEPLACEMENT_POSSIBLE_IA.append(voisinsPion(grille,pionjoueur[len(pionjoueur)-1], pionjoueur[len(pionjoueur)-1][0],pionjoueur[len(pionjoueur)-1][1]))
+
+    print("_______________")
+    print("DEPLACEMENT POSSIBLE")
+    print(LISTE_DEPLACEMENT_POSSIBLE_IA)
+    print("_______________")
+
+    afficherVoisinJoueur(LISTE_DEPLACEMENT_POSSIBLE_IA, CPTIA)
+    print("test", LISTE_J1_CP_PAR_PION)
+
+    return LISTE_DEPLACEMENT_POSSIBLE_IA
 
 
 
