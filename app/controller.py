@@ -2,19 +2,30 @@ import random
 
 import modele
 
+# OK
 grille = modele.grille
 gagnant = "gagnant"
 NOMBRE_DE_LIGNES = 5
 NOMBRE_DE_COLONNES = 5
+
+# à vérifier
 J1_DEPLACEMENTS_POSSIBLES = []
 J2_DEPLACEMENTS_POSSIBLES = []
 
+# à vérifier
 LISTE_CP_J1 = []
 LISTE_CP_J2 = []
 
+# OK
 # Liste des pions des 2 joueurs
 CPTJ1 = []
 CPTIA = []
+
+# OK
+# afficher les voisins pour chaque pion d'un joueur dans une liste
+LISTE_DEPLACEMENT_POSSIBLE_IA = []
+LISTE_DEPLACEMENT_POSSIBLE_J1 = []
+
 
 grillePoint = [
     [1, 3, 5, 3, 1],
@@ -24,7 +35,7 @@ grillePoint = [
     [1, 3, 5, 3, 1]
 ]
 
-
+# OK
 # définir les combinaisons gagnantes signifiant l'arret de la partie
 def combinaisonGagnante(grille, joueur):
     # Verticale
@@ -70,7 +81,7 @@ def combinaisonGagnante(grille, joueur):
     etat = False
     return etat
 
-
+# à vérifier
 # mise en place des 8 pions en début de partie
 def quatrePremierTour():
     cpt = 0
@@ -93,8 +104,9 @@ def quatrePremierTour():
             grille[L][C] = 1
             voisinsPion(grille, (L, C), L, C)
             CPTJ1.append((L, C))
-            deplacementPossible(grille, CPTJ1)
+            #deplacementPossible(grille, CPTJ1)
             joueurActuel = "J2"
+            deplacementPossibleJ1(grille, CPTJ1)
             if combinaisonGagnante(modele.grille, 1):
                 gagnant = "J1"
                 print("Le gagnant est : " + gagnant)
@@ -110,6 +122,7 @@ def quatrePremierTour():
                 print("Le gagnant est : " + gagnant)
                 modele.dessinerPlateau()
                 break
+        afficheVariable()
         afficherGrille(grille)
         modele.dessinerPlateau()
 
@@ -117,14 +130,17 @@ def quatrePremierTour():
         if combinaisonGagnante(modele.grille, 1):
             gagnant = "J1"
             print("Le gagnant est : " + gagnant)
+            return gagnant
         elif combinaisonGagnante(modele.grille, 2):
             gagnant = "J2"
             print("Le gagnant est : " + gagnant)
-        else:
-            partieEnCours()
+            return gagnant
+    partieEnCours()
 
 
 def partieEnCours():
+    print("Partie en cours")
+
     # Etude des cas de chaque joueur
     # Choisir quel pion à déplacer
 
@@ -171,19 +187,6 @@ def voisinsPion(grille, pion, ligne, colonne):
     for i in range(len(indexASuppr) - 1):
         del liste[indexASuppr[i]]
 
-    # si pion = 1, J1.append(liste)
-    # si pion = 2, J2.appendliste)
-    if grille[pion[0]][pion[1]] == 1:
-        J1_DEPLACEMENTS_POSSIBLES.clear()
-        for i in range(len(liste)):
-            J1_DEPLACEMENTS_POSSIBLES.append(liste[i])
-    elif grille[pion[0]][pion[1]] == 2:
-        J2_DEPLACEMENTS_POSSIBLES.clear()
-        for i in range(len(liste)):
-            J2_DEPLACEMENTS_POSSIBLES.append(liste[i])
-    else:
-        print("Pion non valide")
-        return False
     return liste
 
 
@@ -200,10 +203,31 @@ def voisinsPion(grille, pion, ligne, colonne):
 LISTE_J1_CP_PAR_PION = []
 
 
-def deplacementPossible(grille, pions):
-    print("Liste des pions J1 : ", pions)
-    for i in range(len(pions)):
-        LISTE_J1_CP_PAR_PION.append(voisinsPion(grille, pions[i], pions[i][0], pions[i][1]))
+def afficheVariable():
+    print("__________________")
+    print("Pions J1 : ", CPTJ1)
+    print("Pions IA : ", CPTIA)
+    print("Déplacement possible J1 : ", LISTE_DEPLACEMENT_POSSIBLE_J1)
+    print("Déplacement possible IA : ", LISTE_DEPLACEMENT_POSSIBLE_IA)
+    print("__________________")
+
+
+def deplacementPossibles(grille, pionjoueur):
+    LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[len(pionjoueur) - 1])
+    LISTE_DEPLACEMENT_POSSIBLE_IA.append(
+        voisinsPion(grille, pionjoueur[len(pionjoueur) - 1], pionjoueur[len(pionjoueur) - 1][0],
+                    pionjoueur[len(pionjoueur) - 1][1]))
+
+    return LISTE_DEPLACEMENT_POSSIBLE_IA
+
+
+def deplacementPossibleJ1(grille, pionjoueur):
+    LISTE_DEPLACEMENT_POSSIBLE_J1.append(pionjoueur[len(pionjoueur) - 1])
+    LISTE_DEPLACEMENT_POSSIBLE_J1.append(
+        voisinsPion(grille, pionjoueur[len(pionjoueur) - 1], pionjoueur[len(pionjoueur) - 1][0],
+                    pionjoueur[len(pionjoueur) - 1][1]))
+
+    return LISTE_DEPLACEMENT_POSSIBLE_J1
 
 
 def fonctionTest():
@@ -241,13 +265,14 @@ def afficherGrille(grille):
             print(elem, end=' ')
         print()
 
+
 # afficher liste des voisins d'un pion
 def afficherVoisinJoueur(grille, joueur):
     print("Liste pions IA : ", joueur)
-    print("Liste des coups possibles IA taille : ", len(grille),", coups : ", grille)
+    print("Liste des coups possibles IA taille : ", len(grille), ", coups : ", grille)
 
     if len(grille) >= 8:
-        for i in range(0,8,2):
+        for i in range(0, 8, 2):
             print(grille[i])
 
 
@@ -260,30 +285,9 @@ def IA(grille):
         coord = (random.randint(0, 4), random.randint(0, 4))
     grille[coord[0]][coord[1]] = 2
     CPTIA.append(coord)
-    print("Coordonnée IA : ", coord)
-    print("Liste des pions IA : ", CPTIA)
-
     deplacementPossibles(grille, CPTIA)
 
     return grille, coord
-
-# afficher les voisins pour chaque pion d'un joueur dans une liste
-LISTE_DEPLACEMENT_POSSIBLE_IA = []
-
-def deplacementPossibles(grille, pionjoueur):
-    LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[len(pionjoueur)-1])
-    LISTE_DEPLACEMENT_POSSIBLE_IA.append(voisinsPion(grille,pionjoueur[len(pionjoueur)-1], pionjoueur[len(pionjoueur)-1][0],pionjoueur[len(pionjoueur)-1][1]))
-
-    print("_______________")
-    print("DEPLACEMENT POSSIBLE")
-    print(LISTE_DEPLACEMENT_POSSIBLE_IA)
-    print("_______________")
-
-    afficherVoisinJoueur(LISTE_DEPLACEMENT_POSSIBLE_IA, CPTIA)
-    print("test", LISTE_J1_CP_PAR_PION)
-
-    return LISTE_DEPLACEMENT_POSSIBLE_IA
-
 
 
 def deplacerHorizontalementàgauche(grille, joueur):
