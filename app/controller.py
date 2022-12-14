@@ -166,6 +166,9 @@ def partieEnCours():
             print("fin J1")
 
         else:
+            recupererPion(grille,2)
+            print("PION IA : ", CPTIA)
+            print("Déplacement possible : ", LISTE_DEPLACEMENT_POSSIBLE_IA)
             IA(grille)
             #modele.dessinerPlateau()
             #recupererPion(grille, 1)
@@ -237,7 +240,15 @@ def recupererPion(grille, joueur):
                 if grille[x][y] == 1:
                     CPTJ1.append((x,y))
         deplacementPossibleJ1(grille,CPTJ1)
-    return LISTE_DEPLACEMENT_POSSIBLE_J1
+    elif joueur == 2:
+        CPTIA.clear()
+        LISTE_DEPLACEMENT_POSSIBLE_IA.clear()
+        for x in range(5):
+            for y in range(5):
+                if grille[x][y] == 2:
+                    CPTIA.append((x,y))
+        deplacementPossibleIA(grille, CPTIA)
+    return LISTE_DEPLACEMENT_POSSIBLE_J1, LISTE_DEPLACEMENT_POSSIBLE_IA
 
 
 # déterminer voisins disponibles d'un joueur
@@ -314,13 +325,10 @@ def afficheVariable():
     print("__________________")
 
 
-def deplacementPossibles(grille, pionjoueur):
-    LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[len(pionjoueur) - 1])
-    #print("Déplacement possible IA : ",voisinsPion(grille, pionjoueur[len(pionjoueur) - 1], pionjoueur[len(pionjoueur) - 1][0],pionjoueur[len(pionjoueur) - 1][1]))
-    LISTE_DEPLACEMENT_POSSIBLE_IA.append(
-        voisinsPion(grille, pionjoueur[len(pionjoueur) - 1], pionjoueur[len(pionjoueur) - 1][0],
-                    pionjoueur[len(pionjoueur) - 1][1]))
-
+def deplacementPossibleIA(grille, pionjoueur):
+    for i in range(len(pionjoueur)):
+        LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[i])
+        LISTE_DEPLACEMENT_POSSIBLE_IA.append(voisinsPion(grille, pionjoueur[i], pionjoueur[i][0],pionjoueur[i][1]))
     return LISTE_DEPLACEMENT_POSSIBLE_IA
 
 
@@ -386,7 +394,7 @@ def IA(grille):
         coord = (random.randint(0, 4), random.randint(0, 4))
     grille[coord[0]][coord[1]] = 2
     CPTIA.append(coord)
-    deplacementPossibles(grille, CPTIA)
+    deplacementPossibleIA(grille, CPTIA)
 
     return coord
 
