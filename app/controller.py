@@ -405,63 +405,63 @@ def IADeplacement(grille):
     return coord
 
 
-def deplacerHorizontalementàgauche(grille, joueur):
+def deplacerHorizontalementAgauche(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l][n - 1];
-            grille[l][n - 1] = 0;
+            grille[l][n] = grille[l][n - 1]
+            grille[l][n - 1] = 0
 
 
-def deplacerHorizontalementàdroite(grille, joueur):
+def deplacerHorizontalementAdroite(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l][n + 1];
-            grille[l][n + 1] = 0;
+            grille[l][n] = grille[l][n + 1]
+            grille[l][n + 1] = 0
 
 
 # Se déplacer verticalement bas et haut
-def deplacerVerticalementàdroite(grille, joueur):
+def deplacerVerticalementAdroite(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
             grille[l][n] = grille[l + 1][n]
-            grille[l + 1][n] = 0;
+            grille[l + 1][n] = 0
 
 
-def deplacerVerticalementàgauche(grille, joueur):
+def deplacerVerticalementAgauche(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l - 1][n];
-            grille[l - 1][n] = 0;
+            grille[l][n] = grille[l - 1][n]
+            grille[l - 1][n] = 0
     # Se déplacer diagonalement ligne supérieure et inférieure
     # en haut à gauche
 
 
-def deplacerDiagoalementHautàgauche(grille, joueur):
+def deplacerDiagoalementHautAgauche(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l + 1][n - 1];
-            grille[l + 1][n - 1] = 0;
+            grille[l][n] = grille[l + 1][n - 1]
+            grille[l + 1][n - 1] = 0
     # en haut à droite
 
 
-def deplacerDiagoalementHautàdroite(grille, joueur):
+def deplacerDiagoalementHautAdroite(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l + 1][n + 1];
-            grille[l + 1][n + 1] = 0;
+            grille[l][n] = grille[l + 1][n + 1]
+            grille[l + 1][n + 1] = 0
 
 
 # en bas à droite
-def deplacerDiagoalementBasàdroite(grille, joueur):
+def deplacerDiagoalementBasAdroite(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l - 1][n + 1];
-            grille[l - 1][n + 1] = 0;
+            grille[l][n] = grille[l - 1][n + 1]
+            grille[l - 1][n + 1] = 0
         # en bas à gauche
 
 
-def deplacerDiagoalementBasàgauche(grille, joueur):
+def deplacerDiagoalementBasAgauche(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
         for n in range(NOMBRE_DE_COLONNES):
-            grille[l][n] = grille[l - 1][n - 1];
-            grille[l - 1][n - 1] = 0;
+            grille[l][n] = grille[l - 1][n - 1]
+            grille[l - 1][n - 1] = 0
