@@ -1,3 +1,5 @@
+import copy
+import math
 import random
 
 import modele
@@ -7,6 +9,8 @@ grille = modele.grille
 gagnant = "gagnant"
 NOMBRE_DE_LIGNES = 5
 NOMBRE_DE_COLONNES = 5
+PION_JOUEUR = 1
+PION_IA = 2
 
 # à vérifier
 J1_DEPLACEMENTS_POSSIBLES = []
@@ -99,12 +103,12 @@ def premiersTours():
             print("Cette position est déjà prise, veuillez en choisir une autre")
             L = int(input("Ligne (1-5 : ")) - 1
             C = int(input("Colonne (1-5): ")) - 1
-        #print("Joueur : ", joueur)
+        # print("Joueur : ", joueur)
         if joueur == 1:
             grille[L][C] = 1
-            #voisinsPion(grille, (L, C), L, C)
-            #CPTJ1.append((L, C))
-            #deplacementPossibleJ1(grille, CPTJ1)
+            # voisinsPion(grille, (L, C), L, C)
+            # CPTJ1.append((L, C))
+            # deplacementPossibleJ1(grille, CPTJ1)
             joueur = 2
             modele.dessinerPlateau()
             afficherGrille(grille)
@@ -129,6 +133,7 @@ def partieEnCours():
         recupererPion(grille, CPTJ1)
 
         if joueur == 1:
+            print("GRILLE AVANT: ", grille)
             recupererPion(grille, 1)
             print(LISTE_DEPLACEMENT_POSSIBLE_J1)
             print("________________")
@@ -142,10 +147,10 @@ def partieEnCours():
                 X = int(input("Ligne (1-5) : ")) - 1
                 Y = int(input("Colonne (1-5): ")) - 1
             pion = CPTJ1.index((L, C))
-            pion = pion*2
+            pion = pion * 2
             print("Le déplacer sur ? ")
-            recupererPion(grille,1)
-            print("Déplacement possibles : ", LISTE_DEPLACEMENT_POSSIBLE_J1[pion+1])
+            recupererPion(grille, 1)
+            print("Déplacement possibles : ", LISTE_DEPLACEMENT_POSSIBLE_J1[pion + 1])
             X = int(input("Ligne (1-5) : ")) - 1
             Y = int(input("Colonne (1-5): ")) - 1
             print(LISTE_DEPLACEMENT_POSSIBLE_J1)
@@ -156,9 +161,9 @@ def partieEnCours():
             joueur = 2
             grille[X][Y] = 1
             grille[L][C] = 0
-            #recupererPion(grille, 1)
+            # recupererPion(grille, 1)
             print("Liste des pions J1 : ", CPTJ1)
-            #deplacementPossibleJ1(grille,CPTJ1)
+            # deplacementPossibleJ1(grille,CPTJ1)
             print("Déplacement possibles : ", LISTE_DEPLACEMENT_POSSIBLE_J1)
             modele.dessinerPlateau()
             afficherGrille(grille)
@@ -166,13 +171,24 @@ def partieEnCours():
             print("fin J1")
 
         else:
-            recupererPion(grille,2)
+            recupererPion(grille, 2)
             print("PION IA : ", CPTIA)
             print("Déplacement possible : ", LISTE_DEPLACEMENT_POSSIBLE_IA)
-            IA(grille)
+            # IA(grille)
+            #coup = meilleur_coup(grille, 2)
+            coup = minimax(grille, 2, True)
+            print("COUP: ", coup)
+
+            grille[coup[0][0]][coup[0][1]] = 2
+            grille[coup[1][0]][coup[1][1]] = 0
+
+            print("COUP1: ", grille[coup[0][0]][coup[0][1]])
+            print("COUP2: ", grille[coup[1][0]][coup[1][1]])
             #modele.dessinerPlateau()
             #recupererPion(grille, 1)
             joueur = 1
+            print("Fin IA")
+
 
 # à vérifier
 # mise en place des 8 pions en début de partie
@@ -230,6 +246,7 @@ def quatrePremierTour():
             return gagnant
     partieEnCours()
 
+
 # OK
 def recupererPion(grille, joueur):
     if joueur == 1:
@@ -238,15 +255,15 @@ def recupererPion(grille, joueur):
         for x in range(5):
             for y in range(5):
                 if grille[x][y] == 1:
-                    CPTJ1.append((x,y))
-        deplacementPossibleJ1(grille,CPTJ1)
+                    CPTJ1.append((x, y))
+        deplacementPossibleJ1(grille, CPTJ1)
     elif joueur == 2:
         CPTIA.clear()
         LISTE_DEPLACEMENT_POSSIBLE_IA.clear()
         for x in range(5):
             for y in range(5):
                 if grille[x][y] == 2:
-                    CPTIA.append((x,y))
+                    CPTIA.append((x, y))
         deplacementPossibleIA(grille, CPTIA)
     return LISTE_DEPLACEMENT_POSSIBLE_J1, LISTE_DEPLACEMENT_POSSIBLE_IA
 
@@ -288,17 +305,17 @@ def voisinsPion(grille, pion, ligne, colonne):
             indexASuppr.append(indice)
 
     if len(indexASuppr) != 0:
-        #print("LEN : ", len(indexASuppr))
-        #print("LISTE AV : ", liste)
+        # print("LEN : ", len(indexASuppr))
+        # print("LISTE AV : ", liste)
         for element in indexASuppr:
             liste.remove(element)
 
-            #del liste[indexASuppr.index(indice)]
-            #print("LISTE AP : ", liste)
-            #print("i : ", i)
-            #print("liste : ", liste)
-            #print("valeur index : ", int(indexASuppr[i]))
-            #element_suppr = liste.pop(int(indexASuppr[i]))
+            # del liste[indexASuppr.index(indice)]
+            # print("LISTE AP : ", liste)
+            # print("i : ", i)
+            # print("liste : ", liste)
+            # print("valeur index : ", int(indexASuppr[i]))
+            # element_suppr = liste.pop(int(indexASuppr[i]))
 
     return liste
 
@@ -314,7 +331,6 @@ def voisinsPion(grille, pion, ligne, colonne):
 # liste chaînée
 
 
-
 # OK
 def afficheVariable():
     print("__________________")
@@ -328,14 +344,14 @@ def afficheVariable():
 def deplacementPossibleIA(grille, pionjoueur):
     for i in range(len(pionjoueur)):
         LISTE_DEPLACEMENT_POSSIBLE_IA.append(pionjoueur[i])
-        LISTE_DEPLACEMENT_POSSIBLE_IA.append(voisinsPion(grille, pionjoueur[i], pionjoueur[i][0],pionjoueur[i][1]))
+        LISTE_DEPLACEMENT_POSSIBLE_IA.append(voisinsPion(grille, pionjoueur[i], pionjoueur[i][0], pionjoueur[i][1]))
     return LISTE_DEPLACEMENT_POSSIBLE_IA
 
 
 def deplacementPossibleJ1(grille, pionjoueur):
     for i in range(len(pionjoueur)):
         LISTE_DEPLACEMENT_POSSIBLE_J1.append(pionjoueur[i])
-        LISTE_DEPLACEMENT_POSSIBLE_J1.append(voisinsPion(grille, pionjoueur[i], pionjoueur[i][0],pionjoueur[i][1]))
+        LISTE_DEPLACEMENT_POSSIBLE_J1.append(voisinsPion(grille, pionjoueur[i], pionjoueur[i][0], pionjoueur[i][1]))
     return LISTE_DEPLACEMENT_POSSIBLE_J1
 
 
@@ -351,20 +367,20 @@ def fonctionTest():
             res = grillePoint[x][y]
             if grille[x][y] == 0 and res2 < res:
                 res2 = res
-                #print("Coordonnées : ", "(", x, ",", y, ")")
-                #print("Résultat : ", res)
+                # print("Coordonnées : ", "(", x, ",", y, ")")
+                # print("Résultat : ", res)
                 coord = x, y
     return coord
 
 
-def scoreIA(grille):
-    res = 0
+def grille_score(grille, joueur):
+    score = 0
     for x in range(5):
         for y in range(5):
-            if grille[x][y] == 2:
-                res += grillePoint[x][y]
-    print("RESULTAT POINT IA : ", res)
-    return res
+            if grille[x][y] == joueur:
+                score += grillePoint[x][y]
+    #print("RESULTAT POINT ", joueur, " : ", score)
+    return score
 
 
 # afficher grille terminal
@@ -404,6 +420,105 @@ def IADeplacement(grille):
     coord = (0, 0)
     return coord
 
+
+def meilleur_coup(grille, joueur):
+    if joueur == 1:
+        deplacementPossibles = LISTE_DEPLACEMENT_POSSIBLE_J1
+    else:
+        deplacementPossibles = LISTE_DEPLACEMENT_POSSIBLE_IA
+    meilleur_score = 0
+    meilleur_mouvement = random.choice(deplacementPossibles)
+    pion_selection = random.choice(deplacementPossibles)
+    # for pos in sum(deplacementPossibles[1:2], []):
+    alaide = 1
+    for pion in range(len(deplacementPossibles[::2])):
+        for pos in deplacementPossibles[alaide]:
+            g_temp = copy.deepcopy(grille)
+            liste_pion = deplacementPossibles[::2]
+            pion_asupp = liste_pion[pion]
+
+            #print("PION: ", pion)
+            #print("POS: ", pos)
+            #print("LISTE PION: ", pion_asupp)
+            g_temp[pion_asupp[0]][pion_asupp[1]] = 0
+            g_temp[pos[0]][pos[1]] = joueur
+            score = grille_score(g_temp, joueur)
+            #print("GRID STATE: ", grille)
+            if score > meilleur_score:
+                meilleur_score = score
+                meilleur_mouvement = pos
+                pion_selection = pion_asupp
+        alaide += 2
+
+    return meilleur_mouvement, pion_selection
+
+
+def est_noeud_terminal(grille):
+    return combinaisonGagnante(grille, 1) or combinaisonGagnante(grille, 2)
+
+
+def minimax(grille, profondeur, joueurMaximisant):
+    deplacementPossibles = LISTE_DEPLACEMENT_POSSIBLE_IA
+    est_terminal = est_noeud_terminal(grille)
+    if profondeur == 0 or est_terminal:
+        if est_terminal:
+            if combinaisonGagnante(grille, 2):
+                return (None, None, 100000000)
+            elif combinaisonGagnante(grille, 1):
+                return (None, None, -100000000)
+            else:
+                return (None, None, 0)  # Egalité?
+        else:  # Profondeur = 0
+            return (None, None, grille_score(grille, 2))
+    if joueurMaximisant:
+        valeur = -math.inf
+        meilleur_mouvement = random.choice(deplacementPossibles)
+        pion_selection = random.choice(deplacementPossibles)
+
+        alaide = 1
+        for pion in range(len(deplacementPossibles[::2])):
+            for pos in deplacementPossibles[alaide]:
+                g_temp = copy.deepcopy(grille)
+                liste_pion = deplacementPossibles[::2]
+                pion_asupp = liste_pion[pion]
+
+                print("PION: ", pion)
+                print("POS: ", pos)
+                print("LISTE PION: ", pion_asupp)
+
+                g_temp[pion_asupp[0]][pion_asupp[1]] = 0
+                g_temp[pos[0]][pos[1]] = 2
+                #score = grille_score(g_temp, joueur)
+                nvx_score = minimax(g_temp, profondeur - 1, False)[2]
+                if valeur > nvx_score:
+                    valeur = nvx_score
+                    meilleur_mouvement = pos
+                    pion_selection = pion_asupp
+            alaide += 2
+        return meilleur_mouvement, pion_selection, valeur
+
+    else: #Joueur minimisant
+        valeur = math.inf
+        meilleur_mouvement = random.choice(deplacementPossibles)
+        pion_selection = random.choice(deplacementPossibles)
+
+        alaide = 1
+        for pion in range(len(deplacementPossibles[::2])):
+            for pos in deplacementPossibles[alaide]:
+                g_temp = copy.deepcopy(grille)
+                liste_pion = deplacementPossibles[::2]
+                pion_asupp = liste_pion[pion]
+
+                g_temp[pion_asupp[0]][pion_asupp[1]] = 0
+                g_temp[pos[0]][pos[1]] = 2
+                # score = grille_score(g_temp, joueur)
+                nvx_score = minimax(g_temp, profondeur - 1, True)[2]
+                if valeur > nvx_score:
+                    valeur = nvx_score
+                    meilleur_mouvement = pos
+                    pion_selection = pion_asupp
+            alaide += 2
+        return meilleur_mouvement, pion_selection, valeur
 
 def deplacerHorizontalementAgauche(grille, joueur):
     for l in range(NOMBRE_DE_LIGNES):
