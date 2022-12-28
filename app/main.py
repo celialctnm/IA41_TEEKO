@@ -4,5 +4,5 @@ from tkinter import *
 import IA
 
 ## MAIN ##
-IA.partieEnCours2()
+IA.IAvsIA()
 IA.fenetre.mainloop()
