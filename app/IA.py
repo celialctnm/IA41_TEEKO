@@ -1,5 +1,4 @@
 import random
-from tkinter import *
 
 grille = [
     [0, 0, 0, 0, 0],

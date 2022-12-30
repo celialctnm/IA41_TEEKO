@@ -189,18 +189,19 @@ def joueurVSia(depth):
 
                 else:
                     # récupérer le pion à déplacer
-
-                    if len(IA.minmax(None, 5, 5, True)) == 2:
-                        coordOrigin = IA.minmax(None, 5, 5, True)[0]
-                        coordDestination = IA.minmax(None, 5, 5, True)[1]
+                    if len(IA.minmax(None, 5, 5, True)) <= 2:
+                        coordOrigin = IA.minmax(None, 5, 5, True)[0][0]
+                        coordDestination = IA.minmax(None, 5, 5, True)[0][1]
                     else:
                         coordOrigin = IA.minmax(None, 5, 5, True)[0][0]
                         # récupérer le case sur laquelle le placer
                         coordDestination = IA.minmax(None, 5, 5, True)[0][1]
 
                 # récupérer chaque élément des coordonnées
+
                 x = coordOrigin[0]
                 y = coordOrigin[1]
+
 
                 i = coordDestination[0]
                 j = coordDestination[1]
@@ -373,8 +374,8 @@ def PTIAvsIA():
                 joueur = 1
 
             else:
-                coordOrigin = IA.minmax(None, 4, 4, True)[0]
-                coordDestination = IA.minmax(None, 4, 4, True)[1]
+                coordOrigin = IA.minmax(None, 4, 4, True)[0][0]
+                coordDestination = IA.minmax(None, 4, 4, True)[0][1]
 
                 x = coordOrigin[0]
                 y = coordOrigin[1]
