@@ -11,9 +11,9 @@ grille = [
 
 grillePoint = [
     [1, 3, 5, 3, 1],
-    [3, 5, 10, 5, 3],
-    [5, 7, 11, 7, 5],
-    [3, 5, 10, 5, 3],
+    [3, 7, 9, 7, 3],
+    [5, 9, 11, 9, 5],
+    [3, 7, 9, 7, 3],
     [1, 3, 5, 3, 1]
 ]
 
@@ -33,14 +33,14 @@ NOMBRE_DE_COLONNES = 5
 
 LISTE_DEPLACEMENT_POSSIBLE_J1 = []
 
+enfant3 = ""
 
 # IA MIN MAX
 # Noeud de départ, profondeur, profondeur identique à celle précédente, boolean est_IA
 def minmax(node, depth, originalDepth, est_IA):
     noeud = None
-    value = -5000
+    value = 0
     estNoeudTerm = False
-
 
     if node:
         i = node[1][0]
@@ -61,9 +61,10 @@ def minmax(node, depth, originalDepth, est_IA):
 
     # si c'est au tour de l'IA
     if est_IA and not estNoeudTerm:
-        value = -10001
+        value = -10000
 
         # Pour chaque enfant du noeud, on prend la valeur la plus élevé = on maximise nos gains
+        #print("ALL : ", getAllEnfant(grille, node, est_IA))
         for enfant in getAllEnfant(grille, node, est_IA):
             valueEnfant = max(value, minmax(enfant[0], depth - 1, originalDepth, False))
 
@@ -72,13 +73,16 @@ def minmax(node, depth, originalDepth, est_IA):
             if value < valueEnfant:
                 value = valueEnfant
                 noeud = enfant
+
+
     elif not est_IA and not estNoeudTerm:
-        value = 1000
+        value = 10000
         for enfant in getAllEnfant(grille, node, est_IA):
             valueEnfant = min(value, minmax(enfant[0], depth - 1, originalDepth, True))
             if value > valueEnfant:
                 value = valueEnfant
                 noeud = enfant
+
 
     if node:
         grille[i][j] = 0
@@ -88,13 +92,13 @@ def minmax(node, depth, originalDepth, est_IA):
             else:
                 grille[i_source][j_source] = 2
 
-    if depth == originalDepth or combinaisonGagnante(grille, 1) or combinaisonGagnante(grille, 2):
-        return noeud
 
     if estNoeudTerm:
         return value
 
-    ## faire remonter les coord ##
+    if depth == originalDepth:
+        return noeud
+
     return value
 
 
@@ -105,11 +109,11 @@ def evalGrid():
 
     # si l'IA gagne, on retourne une valeur très haute
     if combinaisonGagnante(grille, 2):
-        return 20000
+        return 10000
 
     # si le joueur gagne, on retourne une valeur très basse
     elif combinaisonGagnante(grille, 1):
-        return -20000
+        return -100000
     else:
         from controller import compteur
         global compteur
@@ -118,16 +122,26 @@ def evalGrid():
         # si nous sommes dans les tours de placement
         # on calcule la différence de points entre les pions IA / joueur
         if compteur < 9:
-            return sommePion(2, grillePoint) - sommePion(1, grillePoint)
+            for i in range(5):
+                for j in range(5):
+                    if (grille[2][1] or grille[2][3]) == 1:
+                        grillePoint[2][0] = 9
+                        grillePoint[2][4] = 9
+            res = sommePion(2, grillePoint) - sommePion(1, grillePoint)
+            grillePoint[2][0] = 5
+            grillePoint[2][4] = 5
+            return res
 
         # si nous sommes dans les tours de déplacement et que c'est un IAvsIA
         # on change la grille des points de manière aléatoire
         # => pour avoir un gagnant, sinon les déplacements tournent en boucle
         elif compteur >= 9 and etat == True:
+
             for i in range(5):
                 for j in range(5):
                     grillePointV2[i][j] = random.randint(1, 30)
             return sommePion(2, grillePointV2) - sommePion(1, grillePointV2)
+
 
         # si nous sommes dans les tours de déplacement et que c'est joueur contre IA
         # on calcule la différence de points entre les pions IA / joueur
@@ -187,7 +201,7 @@ def sommePion(joueur, grillePoint):
     return res
 
 
-# récupérer tous les enfants d'un noeud
+# récupérer tous les enfants
 def getAllEnfant(grille, node, estIA):
     # format de la liste [[is,js,id,jd],]
     global compteur
@@ -207,7 +221,6 @@ def getAllEnfant(grille, node, estIA):
                 if len(vp) != 0:
                     tempListePosPossible.append(voisinsPion(grille, pion))
             # deplacement possible pour chaque destination
-
             return tempListePosPossible
         else:
             listPion = getPion(1)
